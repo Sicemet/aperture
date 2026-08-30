@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0a10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>The Aperture</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%238f6fd8' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23ece8df'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=IBM+Plex+Mono:wght@300;400&display=swap">
+<style>
+:root{
+  --ground:#0b0a10; --panel:#14121c; --panel2:#1b1826;
+  --bone:#ece8df; --dusk:#8f8ba0; --amethyst:#8f6fd8; --amethyst-dim:#5d4a8f;
+  --hair:rgba(236,232,223,.13); --hair2:rgba(236,232,223,.07);
+  --danger:#c96a6a; --ok:#7fae8b;
+  --disp:Cinzel,Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --body:Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--ground);color:var(--bone);font-family:var(--body);font-size:16px;line-height:1.65;
+  min-height:100vh;padding-bottom:calc(64px + env(safe-area-inset-bottom));}
+header{padding:1.6rem 1.1rem .9rem;text-align:center}
+header h1{font-family:var(--disp);font-weight:500;font-size:1.35rem;letter-spacing:.3em;text-transform:uppercase;margin:0}
+header p{font-family:var(--mono);font-weight:300;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dusk);margin:.45rem 0 0}
+main{max-width:680px;margin:0 auto;padding:0 1rem}
+section.tab{display:none}
+section.tab.active{display:block}
+h2{font-family:var(--disp);font-weight:500;font-size:1.02rem;letter-spacing:.16em;text-transform:uppercase;
+  margin:1.6rem 0 .6rem;color:var(--bone)}
+h3{font-family:var(--mono);font-weight:400;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--amethyst);margin:1.4rem 0 .4rem}
+p{margin:.55rem 0}
+.small{font-size:.82rem;color:var(--dusk)}
+.mono{font-family:var(--mono)}
+.card{background:var(--panel);border:1px solid var(--hair2);border-radius:10px;padding:1rem 1.05rem;margin:.8rem 0}
+.rule{height:1px;background:var(--hair2);margin:1.2rem 0;border:0}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(11,10,16,.96);
+  border-top:1px solid var(--hair2);backdrop-filter:blur(8px);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;color:var(--dusk);font-family:var(--mono);font-weight:300;
+  font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:.9rem 0 .8rem;cursor:pointer}
+nav button.active{color:var(--bone)}
+nav button.active span{color:var(--amethyst)}
+nav button span{display:block;font-size:1.05rem;margin-bottom:.2rem;color:var(--dusk)}
+label{display:block;font-family:var(--mono);font-weight:300;font-size:.68rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dusk);margin:.9rem 0 .3rem}
+input[type=text],textarea,select{width:100%;background:var(--panel2);border:1px solid var(--hair);border-radius:8px;
+  color:var(--bone);font-family:var(--body);font-size:1rem;padding:.65rem .7rem;outline:none}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--amethyst-dim)}
+textarea{resize:vertical;min-height:70px}
+button.b{background:var(--panel2);border:1px solid var(--hair);border-radius:8px;color:var(--bone);
+  font-family:var(--mono);font-weight:300;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.6rem .95rem;cursor:pointer}
+button.b:active{background:var(--amethyst-dim)}
+button.b.primary{border-color:var(--amethyst-dim);color:#dcd2f2}
+button.b.warn{border-color:rgba(201,106,106,.4);color:var(--danger)}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.7rem 0}
+.letters{font-family:var(--mono);font-size:1.35rem;letter-spacing:.35em;color:var(--amethyst);
+  text-align:center;padding:.6rem 0 .2rem;min-height:2.2rem;word-break:break-all}
+.strike{color:var(--dusk);opacity:.35;text-decoration:line-through}
+#wrap{position:relative;width:100%;aspect-ratio:1/1;background:#080711;border:1px solid var(--hair);
+  border-radius:10px;overflow:hidden;touch-action:none}
+#pad{position:absolute;inset:0;width:100%;height:100%}
+.pill{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  border:1px solid var(--hair);border-radius:999px;padding:.18rem .6rem;color:var(--dusk)}
+.pill.run{color:var(--ok);border-color:rgba(127,174,139,.35)}
+.pill.test{color:var(--amethyst);border-color:var(--amethyst-dim)}
+.pill.ret{color:var(--dusk)}
+.entry{border-bottom:1px solid var(--hair2);padding:.75rem 0}
+.entry:last-child{border-bottom:0}
+.entry .meta{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;color:var(--dusk);text-transform:uppercase}
+.entry .statement{font-style:italic;color:var(--bone);margin:.25rem 0}
+details{margin:.6rem 0}
+summary{font-family:var(--disp);font-size:.95rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;
+  padding:.55rem 0;color:var(--bone);list-style:none}
+summary::before{content:"◆ ";color:var(--amethyst);font-size:.7rem;vertical-align:2px}
+details[open] summary::before{content:"◇ "}
+.gnosis-circle{width:130px;height:130px;border-radius:50%;border:2px solid var(--amethyst-dim);
+  margin:1rem auto;transition:transform 1s linear, border-color 1s linear}
+@media (prefers-reduced-motion: reduce){.gnosis-circle{transition:none}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(74px + env(safe-area-inset-bottom));
+  background:var(--panel2);border:1px solid var(--amethyst-dim);color:var(--bone);border-radius:8px;
+  padding:.5rem .9rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;opacity:0;pointer-events:none;
+  transition:opacity .25s}
+.toast.show{opacity:1}
+a{color:var(--amethyst)}
+</style>
+</head>
+<body>
+<header>
+  <h1>The Aperture</h1>
+  <p>belief is the instrument</p>
+</header>
+<main>
+
+<!-- ============ CRAFT ============ -->
+<section class="tab active" id="tab-craft">
+  <div class="card">
+    <label for="intent">Statement of intent</label>
+    <input type="text" id="intent" placeholder="I AM CALM UNDER PRESSURE" autocomplete="off">
+    <p class="small">Present tense. Positive form &mdash; the deep mind drops &ldquo;not.&rdquo; Say what IS, as if already true.</p>
+    <div class="row">
+      <button class="b" id="vowelsBtn">strike vowels: on</button>
+    </div>
+    <div class="letters" id="letters"></div>
+    <p class="small" id="letterHint" style="text-align:center"></p>
+  </div>
+
+  <p class="small" style="text-align:center">letters struck &mdash; now open <span class="mono" style="color:var(--amethyst)">DRAW</span> to shape them</p>
+
+
+  <div class="card">
+    <h3 style="margin-top:.2rem">Gnosis &mdash; breath box</h3>
+    <div class="gnosis-circle" id="gCircle"></div>
+    <p class="mono small" id="gPhase" style="text-align:center;letter-spacing:.2em">&nbsp;</p>
+    <div class="row" style="justify-content:center">
+      <button class="b" id="gBtn">begin</button>
+    </div>
+    <p class="small">Four counts in, four held, four out, four empty. Ride it until thought quiets, then fire: one clear look at the glyph, release, and move on.</p>
+  </div>
+
+
+</section>
+
+<!-- ============ DRAW ============ -->
+<section class="tab" id="tab-draw">
+  <div class="card">
+    <h3 style="margin-top:.2rem">Forms &mdash; the characters</h3>
+    <p class="small">Tap a form to read it. Tap again to arm it, then tap the canvas to stamp it where it belongs. Workings are spelled from these &mdash; the Court glyphs are sentences in this alphabet.</p>
+    <div id="palList" class="row" style="justify-content:center"></div>
+    <div id="formInfo" class="small" style="min-height:2.4rem;text-align:center;padding:.3rem 0"></div>
+    <div class="row" style="justify-content:center">
+      <button class="b" id="sizeBtn">size: m</button>
+      <button class="b" id="disarmBtn">empty hand</button>
+    </div>
+  </div>
+  <div class="card">
+    <label>Glyph &mdash; draw with your finger</label>
+    <div id="wrap"><canvas id="pad"></canvas></div>
+    <div class="row">
+      <button class="b" id="seedBtn">seed letters</button>
+      <button class="b" id="guideBtn">guide</button>
+      <button class="b" id="undoBtn">undo</button>
+      <button class="b warn" id="clearBtn">clear</button>
+    </div>
+    <div class="row">
+      <button class="b primary" id="pngBtn">save png</button>
+      <button class="b" id="draftBtn">keep draft</button>
+    </div>
+    <p class="small">Fold the remaining letters into one shape. Merge strokes, rotate, overlap &mdash; keep abstracting until the statement is unreadable. The glyph should feel right and say nothing.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:.2rem">The working so far</h3>
+    <div id="readList" class="small" style="font-style:italic">nothing stamped yet &mdash; freehand or forms, both count</div>
+  </div>
+  <div class="card" id="draftsCard" style="display:none">
+    <h3 style="margin-top:.2rem">Drafts</h3>
+    <div id="draftsList" class="row"></div>
+  </div>
+</section>
+
+<!-- ============ COURT ============ -->
+<section class="tab" id="tab-court">
+  <h2>The Court</h2>
+  <p class="small">Working glyphs, kept at hand. Overlearned, not forgotten &mdash; traced nightly at threshold until they draw themselves, so they come when called.</p>
+
+  <div class="card">
+    <h3 style="margin-top:.2rem">The Unmoved</h3>
+    <svg viewBox="0 0 400 420" style="width:100%;max-width:340px;display:block;margin:0 auto;background:#080711;border:1px solid var(--hair);border-radius:10px">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="172,58 186,38 200,58 214,38 228,58" stroke="#ece8df" stroke-width="5"/>
+        <path d="M 200 66 C 172 92, 228 118, 200 146 C 176 170, 222 186, 200 208" stroke="#b9b6c6" stroke-width="4"/>
+        <line x1="200" y1="208" x2="192" y2="198" stroke="#b9b6c6" stroke-width="4"/>
+        <line x1="200" y1="208" x2="208" y2="198" stroke="#b9b6c6" stroke-width="4"/>
+        <polyline points="120,340 200,120 280,340" stroke="#ece8df" stroke-width="5"/>
+        <circle cx="200" cy="240" r="28" stroke="#ece8df" stroke-width="5"/>
+        <polyline points="188,232 200,252 212,232" stroke="#b9b6c6" stroke-width="4"/>
+        <line x1="158" y1="282" x2="242" y2="282" stroke="#ece8df" stroke-width="5"/>
+        <line x1="110" y1="340" x2="290" y2="340" stroke="#ece8df" stroke-width="5"/>
+        <path d="M 140 352 Q 200 378 260 352" stroke="#7d7896" stroke-width="3.5"/>
+        <path d="M 158 357 Q 200 372 242 357" stroke="#7d7896" stroke-width="3.5"/>
+      </g>
+    </svg>
+    <p class="statement" style="text-align:center;font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dusk);margin-top:.8rem">the fire kneels &middot; <span style="color:var(--amethyst)">i am unmoved</span></p>
+    <p class="small">The clutch from rage to authority. Fired at any rage-spike, waking or dreaming: see the glyph, run the descent line down, let the fire kneel into the vessel. Nothing is suppressed &mdash; the charge is relocated, head to heart, fury to weight. Every waking firing is a rep for the dream-side pivot.</p>
+    <p class="small">Read top to bottom: crown of stilled flame, the charge drawn down, the vessel held inside the mountain, bench, ground, Night beneath. Five layers of seat under the flame.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:.2rem">The Reversal</h3>
+    <svg viewBox="0 0 400 420" style="width:100%;max-width:340px;display:block;margin:0 auto;background:#080711;border:1px solid var(--hair);border-radius:10px">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="200" y1="70" x2="200" y2="330" stroke="#ece8df" stroke-width="5"/>
+        <circle cx="200" cy="160" r="38" stroke="#ece8df" stroke-width="5"/>
+        <circle cx="200" cy="160" r="6" fill="#ece8df" stroke="none"/>
+        <line x1="152" y1="230" x2="248" y2="230" stroke="#ece8df" stroke-width="5"/>
+        <line x1="200" y1="230" x2="150" y2="300" stroke="#ece8df" stroke-width="5"/>
+        <line x1="200" y1="230" x2="250" y2="300" stroke="#ece8df" stroke-width="5"/>
+        <polyline points="140,330 170,305 200,330 230,305 260,330" stroke="#ece8df" stroke-width="5"/>
+        <path d="M 58 64 C 105 38, 148 112, 200 96 C 240 84, 262 108, 258 148 C 256 170, 240 176, 224 165" stroke="#b9b6c6" stroke-width="4"/>
+        <line x1="224" y1="165" x2="229" y2="176" stroke="#b9b6c6" stroke-width="4"/>
+        <line x1="224" y1="165" x2="236" y2="166" stroke="#b9b6c6" stroke-width="4"/>
+        <path d="M 128 344 Q 200 386 272 344" stroke="#7d7896" stroke-width="3.5"/>
+        <path d="M 158 349 Q 200 372 252 349" stroke="#7d7896" stroke-width="3.5"/>
+      </g>
+    </svg>
+    <p class="statement" style="text-align:center;font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dusk);margin-top:.8rem">i hold the look &middot; <span style="color:var(--amethyst)">the current feeds me</span></p>
+    <p class="small">The trap&rsquo;s jaws. Fired at a fear-spike in paralysis or dream: no fight to wake &mdash; surrender the body, hold the look, let the current line run inward. A glyph is pre-verbal; there is nothing to jam. It fires whole or not at all.</p>
+    <p class="small">The current enters from the corner where they stand and terminates inside the aperture. The harvest, drawn in reverse.</p>
+  </div>
+
+  <div class="card">
+    <p class="small" style="margin:0">Nightly, at threshold &mdash; headphones on: trace each once with the eyes, once with a finger in the air. Reversal first (the jaws), Unmoved second (the hand). Thirty seconds each. Stop when they appear whole without effort. Log firings in the record.</p>
+  </div>
+</section>
+
+<!-- ============ LEARN ============ -->
+<section class="tab" id="tab-learn">
+  <h2>The Basics</h2>
+  <p class="small">Chaos magick, compressed to what you actually use. Read once, then practice; the app is the practice.</p>
+
+  <details open>
+    <summary>The one axiom</summary>
+    <p>Belief is a tool, not a truth. You pick the model that produces results, run it with total commitment, and set it down when it stops paying. A belief that is <em>run</em> does work; a truth that is not run does nothing. Everything else here is engineering on top of that.</p>
+    <p>This means you never have to settle what is &ldquo;really&rdquo; happening. Psychological model, spirit model, energy model &mdash; run whichever gets results today. The ledger tab exists to track exactly that.</p>
+  </details>
+
+  <details>
+    <summary>The method loop</summary>
+    <p><span class="mono">INTENT &rarr; SIGIL &rarr; GNOSIS &rarr; FIRE &rarr; RELEASE &rarr; RECORD</span></p>
+    <p>State what you want. Compress it past the reach of the talking mind. Enter an altered state. Fire the compressed form through that state. Let go of it. Write down what happened. That loop, repeated, is the entire practice &mdash; everything else is variation.</p>
+  </details>
+
+  <details>
+    <summary>Statement of intent</summary>
+    <p>One sentence. Present tense, as if already true. Positive form only &mdash; name what IS, never what is not, because the deep mind drops negations. Be exact: a statement executes literally, like a contract. Vague intent produces vague results; unbounded intent binds more than you meant.</p>
+    <p>Weak: <em>I want to stop being anxious.</em> Strong: <em>I AM CALM UNDER PRESSURE.</em></p>
+  </details>
+
+  <details>
+    <summary>Sigil craft</summary>
+    <p>The classic method (Austin Osman Spare): write the statement, strike out repeated letters &mdash; most also strike vowels &mdash; then fuse what remains into a single abstract glyph. Merge shared strokes, rotate letters, stack them, simplify. Finished when it no longer reads as writing and looks like it means something you cannot name.</p>
+    <p>Why it works, in any model you like: the statement passes to the deeper mind in a form the inner critic cannot argue with. The Craft tab does the striking for you and gives you the surface to draw on.</p>
+  </details>
+
+  <details>
+    <summary>Gnosis</summary>
+    <p>Intent alone does nothing; it is fired through an altered state. Two doors. <strong>Inhibitory:</strong> stillness &mdash; slow breathing, fixed gaze, the edge of sleep, sensory quiet. <strong>Excitatory:</strong> peak &mdash; exhaustion, dance, intense emotion caught at its crest. Use whichever door opens easiest for you, and note that the edge of sleep is one of the most reliable gates there is.</p>
+    <p>The breath box on the Craft tab is the humble, always-available inhibitory route. It is enough.</p>
+  </details>
+
+  <details>
+    <summary>Charging &amp; firing</summary>
+    <p>Enter gnosis with the glyph at hand. At the deepest point, look at it once &mdash; total attention, no words &mdash; then stop. That look is the firing. For a result-in-the-world sigil, the classic next move is to <em>forget it</em>: destroy the paper, bury the file, move your attention decisively elsewhere so the deep mind runs it undisturbed.</p>
+    <p>The exception: a sigil you must fire in the moment &mdash; a calm-trigger, a courage mark &mdash; is <em>overlearned</em> instead: traced daily until it draws itself, so it comes when called with no paper needed.</p>
+  </details>
+
+  <details>
+    <summary>Banishing &amp; closing</summary>
+    <p>Every working opens a charged space and must close it. Simplest banishing: laughter &mdash; a genuine laugh at the whole affair collapses the charge cleanly. Or a fixed phrase and gesture: palms together, <em>it is done, the space is closed.</em> Same words every time, so the cue itself gains weight.</p>
+    <p>Closing is not superstition; it is hygiene. It stops the working from leaking into the rest of your day, and it stops lust-for-result &mdash; the anxious checking that strangles outcomes.</p>
+  </details>
+
+  <details>
+    <summary>Servitors, in brief</summary>
+    <p>A servitor is a bounded thoughtform with a job: named, given a duty, fed attention on a schedule, and dismissed or retired when done. Build one only after the sigil loop is comfortable. Three clauses every servitor needs: a <em>duty</em> (one job, stated exactly), a <em>feed</em> (what it lawfully receives, and when), and a <em>release</em> (the condition that ends it). An instrument with no release clause binds its maker.</p>
+  </details>
+
+  <details>
+    <summary>Paradigms &amp; the ledger</summary>
+    <p>A paradigm is a whole belief-frame worn on purpose &mdash; run fully while in, set down cleanly when out. The skill is the clutch, not the frame. The Ledger tab treats each belief as an experiment: state it, run it, log results, then adopt, keep testing, or retire it. Nothing is held sacred; everything is held accountable.</p>
+  </details>
+
+  <details>
+    <summary>The record</summary>
+    <p>This practice is empirical or it is nothing. Every working gets a log entry: date, what you did, what state you reached, what happened after. Memory flatters and distorts; a written record is the only honest instrument you have. One success is an anecdote. A log is a practice.</p>
+    <p>Export your data often (Log tab). The exported file is the true grimoire &mdash; the app is just its pen.</p>
+  </details>
+</section>
+<!-- ============ LEDGER ============ -->
+<section class="tab" id="tab-ledger">
+  <h2>Belief Ledger</h2>
+  <p class="small">Beliefs as experiments. State one, run it, log what it yields, then adopt, keep testing, or retire it.</p>
+  <div class="card">
+    <label for="belName">Name</label>
+    <input type="text" id="belName" placeholder="The current answers attention" autocomplete="off">
+    <label for="belState">Statement &mdash; the belief, worn as true</label>
+    <textarea id="belState" placeholder="What I feed with attention feeds me back."></textarea>
+    <label for="belNotes">Notes / conditions</label>
+    <textarea id="belNotes" placeholder="Run during morning practice for 30 days."></textarea>
+    <div class="row">
+      <button class="b primary" id="belAdd">add belief</button>
+    </div>
+  </div>
+  <div id="belList"></div>
+</section>
+
+<!-- ============ LOG ============ -->
+<section class="tab" id="tab-log">
+  <h2>Practice Log</h2>
+  <div class="card">
+    <label for="logType">Working</label>
+    <select id="logType">
+      <option>Sigil fired</option>
+      <option>Sigil charged</option>
+      <option>Gnosis session</option>
+      <option>Banishing</option>
+      <option>Dreamwork</option>
+      <option>Result observed</option>
+      <option>Other</option>
+    </select>
+    <label for="logText">Entry</label>
+    <textarea id="logText" placeholder="State reached, what was done, what followed."></textarea>
+    <div class="row">
+      <button class="b primary" id="logAdd">log it</button>
+    </div>
+  </div>
+  <div id="logList"></div>
+  <hr class="rule">
+  <div class="card">
+    <h3 style="margin-top:.2rem">The grimoire file</h3>
+    <p class="small">Everything above lives only in this browser. Export often; the file is the real record.</p>
+    <div class="row">
+      <button class="b primary" id="expBtn">export all</button>
+      <button class="b" id="impBtn">import</button>
+      <input type="file" id="impFile" accept="application/json" style="display:none">
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav>
+  <button data-tab="craft" class="active"><span>&#9670;</span>Craft</button>
+  <button data-tab="draw"><span>&#9998;&#xFE0E;</span>Draw</button>
+  <button data-tab="court"><span>&#9788;&#xFE0E;</span>Court</button>
+  <button data-tab="learn"><span>&#9671;</span>Learn</button>
+  <button data-tab="ledger"><span>&#9707;</span>Ledger</button>
+  <button data-tab="log"><span>&#9997;&#xFE0E;</span>Log</button>
+</nav>
+<div class="toast" id="toast"></div>
+<script>
+"use strict";
+// ---------- helpers ----------
+var $ = function(id){ return document.getElementById(id); };
+function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove("show");},1800); }
+function store(key,val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+function load(key,fb){ try{ var v=localStorage.getItem(key); return v?JSON.parse(v):fb; }catch(e){ return fb; } }
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+// ---------- tabs ----------
+var navBtns = document.querySelectorAll("nav button");
+navBtns.forEach(function(b){
+  b.addEventListener("click", function(){
+    navBtns.forEach(function(x){x.classList.remove("active");});
+    b.classList.add("active");
+    document.querySelectorAll("section.tab").forEach(function(s){s.classList.remove("active");});
+    $("tab-"+b.dataset.tab).classList.add("active");
+    if(b.dataset.tab==="draw"){ sizePad(); setTimeout(sizePad,60); }
+    window.scrollTo(0,0);
+  });
+});
+
+// ---------- condenser ----------
+var strikeVowels = true;
+function condense(str){
+  var up = str.toUpperCase().replace(/[^A-Z]/g,"");
+  var seen = {}, out = [], struck = [];
+  for (var i=0;i<up.length;i++){
+    var ch = up[i];
+    var isV = "AEIOU".indexOf(ch) >= 0;
+    if ((strikeVowels && isV) || seen[ch]) { struck.push(ch); }
+    else { seen[ch]=1; out.push(ch); }
+  }
+  return out;
+}
+function renderLetters(){
+  var raw = $("intent").value;
+  var kept = condense(raw);
+  var up = raw.toUpperCase().replace(/[^A-Z]/g,"");
+  var seen = {}, html = "";
+  for (var i=0;i<up.length;i++){
+    var ch = up[i];
+    var isV = "AEIOU".indexOf(ch) >= 0;
+    if ((strikeVowels && isV) || seen[ch]) html += '<span class="strike">'+ch+'</span>';
+    else { seen[ch]=1; html += ch; }
+  }
+  $("letters").innerHTML = html || '<span class="strike">&mdash;</span>';
+  $("letterHint").textContent = kept.length ? kept.length+" letters remain - fold them into one shape" : "";
+  window._kept = kept;
+}
+$("intent").addEventListener("input", renderLetters);
+$("vowelsBtn").addEventListener("click", function(){
+  strikeVowels = !strikeVowels;
+  this.textContent = "strike vowels: " + (strikeVowels ? "on" : "off");
+  renderLetters();
+});
+renderLetters();
+// ---------- canvas ----------
+var wrap=$("wrap"), pad=$("pad"), ctx=pad.getContext("2d");
+var strokes=[], cur=null, guideOn=false, seedShapes=[];
+function sizePad(){
+  var r = wrap.getBoundingClientRect();
+  var d = Math.min(window.devicePixelRatio||1, 2);
+  pad.width = Math.round(r.width*d); pad.height = Math.round(r.height*d);
+  ctx.setTransform(d,0,0,d,0,0);
+  redraw();
+}
+window.addEventListener("resize", sizePad);
+function redraw(){
+  var r = wrap.getBoundingClientRect(), w=r.width, h=r.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#080711"; ctx.fillRect(0,0,w,h);
+  if (guideOn){
+    ctx.strokeStyle="rgba(143,111,216,.18)"; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(w/2,h/2,Math.min(w,h)*.38,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w/2,h*.08); ctx.lineTo(w/2,h*.92); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w*.08,h/2); ctx.lineTo(w*.92,h/2); ctx.stroke();
+  }
+  seedShapes.forEach(function(s){
+    ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.rot);
+    ctx.font = "300 "+s.size+"px Georgia, serif";
+    ctx.fillStyle="rgba(143,139,160,.28)";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText(s.ch,0,0); ctx.restore();
+  });
+  ctx.lineCap="round"; ctx.lineJoin="round";
+  strokes.forEach(function(st){
+    ctx.strokeStyle="#ece8df"; ctx.lineWidth=3.2;
+    ctx.beginPath();
+    st.forEach(function(p,i){ i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]); });
+    ctx.stroke();
+  });
+}
+function pos(e){
+  var r = wrap.getBoundingClientRect();
+  return [e.clientX-r.left, e.clientY-r.top];
+}
+pad.addEventListener("pointerdown", function(e){
+  e.preventDefault();
+  if(armedForm){ var p0=pos(e); stampAt(p0[0],p0[1]); return; }
+  pad.setPointerCapture(e.pointerId);
+  cur=[pos(e)]; strokes.push(cur); redraw();
+});
+pad.addEventListener("pointermove", function(e){
+  if(!cur) return; cur.push(pos(e)); redraw();
+});
+function endStroke(){ cur=null; }
+pad.addEventListener("pointerup", endStroke);
+pad.addEventListener("pointercancel", endStroke);
+$("undoBtn").addEventListener("click", function(){ strokes.pop(); redraw(); });
+$("clearBtn").addEventListener("click", function(){ strokes=[]; seedShapes=[]; reading=[]; renderReading(); redraw(); });
+$("guideBtn").addEventListener("click", function(){ guideOn=!guideOn; redraw(); });
+$("seedBtn").addEventListener("click", function(){
+  var kept = window._kept||[];
+  if(!kept.length){ toast("write a statement first"); return; }
+  var r = wrap.getBoundingClientRect(), w=r.width, h=r.height;
+  seedShapes = kept.map(function(ch,i){
+    var ang = (i/kept.length)*Math.PI*2 + Math.random()*0.9;
+    var rad = Math.min(w,h)*(0.10+Math.random()*0.26);
+    return { ch:ch, x:w/2+Math.cos(ang)*rad, y:h/2+Math.sin(ang)*rad,
+      rot:Math.random()*Math.PI*2, size:34+Math.random()*46 };
+  });
+  redraw(); toast("letters seeded - trace over what calls to you");
+});
+// ---------- glyph forms (the characters) ----------
+function _line(a,b,n){ n=n||2; var o=[]; for(var i=0;i<n;i++){var t=i/(n-1);
+  o.push([a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t]);} return o; }
+function _arc(cx,cy,r,a0,a1,n){ var o=[]; for(var i=0;i<n;i++){var t=a0+(a1-a0)*i/(n-1);
+  o.push([cx+Math.cos(t)*r, cy+Math.sin(t)*r]);} return o; }
+function _cub(p0,p1,p2,p3,n){ var o=[]; for(var i=0;i<n;i++){var t=i/(n-1),u=1-t;
+  o.push([u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],
+          u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]]);} return o; }
+var FORMS=[
+{id:"spine",name:"Spine",meaning:"the sovereign axis; the self that stands",
+ why:"start here - everything else hangs on who is standing",
+ strokes:function(){return [_line([.5,.06],[.5,.94])];}},
+{id:"seed",name:"Seed",meaning:"the held gaze; a beginning kept",
+ why:"place inside a vessel to mark what the working centers on",
+ strokes:function(){return [_arc(.5,.5,.06,0,Math.PI*2,10)];}},
+{id:"vessel",name:"Vessel",meaning:"containment; what is held and not spilled",
+ why:"wrap a seed or a flame you intend to keep, not spend",
+ strokes:function(){return [_arc(.5,.5,.4,0,Math.PI*2,26)];}},
+{id:"ground",name:"Ground",meaning:"foundation; the claim staked",
+ why:"set beneath a form to end its drift - it rests here",
+ strokes:function(){return [_line([.06,.8],[.94,.8])];}},
+{id:"mountain",name:"Mountain",meaning:"the unmoved; weight nothing leans on and wins",
+ why:"shelter a vessel inside it when the held thing must not be taken",
+ strokes:function(){return [[[.08,.9],[.5,.08],[.92,.9]]];}},
+{id:"kneel",name:"Kneeling flame",meaning:"force yielded, not killed; charge point-down",
+ why:"turn raw fire into fuel by pointing it down",
+ strokes:function(){return [[[.15,.2],[.5,.85],[.85,.2]]];}},
+{id:"fire",name:"Fire",meaning:"raw charge; worn high a crown, worn low a burn",
+ why:"the energy of a working - decide where it sits",
+ strokes:function(){return [[[.06,.8],[.28,.2],[.5,.8],[.72,.2],[.94,.8]]];}},
+{id:"current",name:"Current",meaning:"movement; charge in transit",
+ why:"connect two forms so one feeds the other",
+ strokes:function(){return [_cub([.5,.04],[.05,.3],[.95,.6],[.5,.96],22)];}},
+{id:"aim",name:"Aim",meaning:"direction; where the current terminates",
+ why:"end a current with it so the charge lands where you chose",
+ strokes:function(){return [_line([.15,.85],[.78,.22]),
+   _line([.78,.22],[.5,.28]), _line([.78,.22],[.72,.5])];}},
+{id:"bind",name:"Bind",meaning:"the meeting; two powers crossed and fixed",
+ why:"lock a joint where forms must not drift apart",
+ strokes:function(){return [_line([.5,.1],[.5,.9]), _line([.1,.5],[.9,.5])];}},
+{id:"night",name:"Night",meaning:"the deep that cradles; what holds the whole",
+ why:"set beneath a finished working to seat it in the dark",
+ strokes:function(){return [_arc(.5,.28,.42,Math.PI*0.12,Math.PI*0.88,16),
+   _arc(.5,.30,.30,Math.PI*0.16,Math.PI*0.84,12)];}}
+];
+var armedForm=null, stampSize=1, SIZES=[.16,.26,.38], SIZENAMES=["s","m","l"];
+var reading=[];
+function formSVG(f){
+  var s='<svg viewBox="0 0 44 44" width="44" height="44"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">';
+  f.strokes().forEach(function(st){
+    s+='<polyline points="'+st.map(function(p){return (4+p[0]*36).toFixed(1)+','+(4+p[1]*36).toFixed(1);}).join(' ')+'"/>';
+  });
+  return s+'</g></svg>';
+}
+function renderReading(){
+  var el=$("readList");
+  if(!reading.length){ el.innerHTML="nothing stamped yet &mdash; freehand or forms, both count"; return; }
+  el.innerHTML = reading.map(function(r){
+    return '<span style="color:var(--amethyst)">'+r.name+'</span> <span style="font-style:normal">&middot;</span> '+r.meaning;
+  }).join('<br>');
+}
+function buildPalette(){
+  var pl=$("palList");
+  FORMS.forEach(function(f){
+    var b=document.createElement("button");
+    b.className="b"; b.style.cssText="padding:.4rem;color:var(--dusk)";
+    b.innerHTML=formSVG(f); b.title=f.name+" - "+f.meaning;
+    b.addEventListener("click", function(){
+      if(armedForm===f){ disarm(); return; }
+      document.querySelectorAll("#palList button").forEach(function(x){x.style.color="var(--dusk)";x.style.borderColor="var(--hair)";});
+      if(window.__sel===f){
+        armedForm=f; b.style.color="var(--amethyst)"; b.style.borderColor="var(--amethyst-dim)";
+        $("formInfo").innerHTML='<span style="color:var(--amethyst)" class="mono">'+f.name.toUpperCase()+' ARMED</span> &mdash; tap the canvas to stamp it';
+      } else {
+        window.__sel=f; b.style.color="var(--bone)"; b.style.borderColor="var(--hair)";
+        $("formInfo").innerHTML='<strong style="font-family:var(--disp);letter-spacing:.08em">'+f.name+'</strong> &mdash; '+f.meaning+'.<br><span style="color:var(--amethyst)">why:</span> '+f.why+'. <span class="mono">tap again to arm</span>';
+      }
+    });
+    pl.appendChild(b);
+  });
+}
+function disarm(){
+  armedForm=null; window.__sel=null;
+  document.querySelectorAll("#palList button").forEach(function(x){x.style.color="var(--dusk)";x.style.borderColor="var(--hair)";});
+  $("formInfo").innerHTML="";
+}
+$("disarmBtn").addEventListener("click", disarm);
+$("sizeBtn").addEventListener("click", function(){
+  stampSize=(stampSize+1)%SIZES.length;
+  this.textContent="size: "+SIZENAMES[stampSize];
+});
+function stampAt(x,y){
+  var r=wrap.getBoundingClientRect(), S=Math.min(r.width,r.height)*SIZES[stampSize];
+  armedForm.strokes().forEach(function(st){
+    strokes.push(st.map(function(p){ return [x+(p[0]-.5)*S, y+(p[1]-.5)*S]; }));
+  });
+  reading.push({name:armedForm.name, meaning:armedForm.meaning});
+  renderReading(); redraw();
+}
+buildPalette();
+
+// ---------- export png / drafts ----------
+function snapshot(cb){
+  var out = document.createElement("canvas");
+  out.width=800; out.height=800;
+  var o = out.getContext("2d");
+  o.fillStyle="#080711"; o.fillRect(0,0,800,800);
+  var r = wrap.getBoundingClientRect(), sc=800/r.width;
+  o.lineCap="round"; o.lineJoin="round";
+  o.strokeStyle="#ece8df"; o.lineWidth=3.2*sc;
+  strokes.forEach(function(st){
+    o.beginPath();
+    st.forEach(function(p,i){ i?o.lineTo(p[0]*sc,p[1]*sc):o.moveTo(p[0]*sc,p[1]*sc); });
+    o.stroke();
+  });
+  cb(out);
+}
+$("pngBtn").addEventListener("click", function(){
+  if(!strokes.length){ toast("nothing drawn yet"); return; }
+  snapshot(function(out){
+    var a=document.createElement("a");
+    a.download="sigil-"+Date.now()+".png";
+    a.href=out.toDataURL("image/png");
+    document.body.appendChild(a); a.click(); a.remove();
+    toast("saved to downloads");
+  });
+});
+var drafts = load("ap_drafts",[]);
+function renderDrafts(){
+  var c=$("draftsCard"), l=$("draftsList");
+  if(!drafts.length){ c.style.display="none"; return; }
+  c.style.display="block"; l.innerHTML="";
+  drafts.forEach(function(d,i){
+    var img=document.createElement("img");
+    img.src=d.png; img.style.cssText="width:72px;height:72px;border:1px solid var(--hair);border-radius:8px";
+    img.title=d.note||""; img.addEventListener("click", function(){
+      if(confirm("Delete this draft?")){ drafts.splice(i,1); store("ap_drafts",drafts); renderDrafts(); }
+    });
+    l.appendChild(img);
+  });
+}
+$("draftBtn").addEventListener("click", function(){
+  if(!strokes.length){ toast("nothing drawn yet"); return; }
+  snapshot(function(out){
+    var small=document.createElement("canvas"); small.width=300; small.height=300;
+    small.getContext("2d").drawImage(out,0,0,300,300);
+    drafts.unshift({ png:small.toDataURL("image/jpeg",0.8), note:$("intent").value, t:Date.now() });
+    if(drafts.length>12) drafts.pop();
+    store("ap_drafts",drafts); renderDrafts(); toast("draft kept (tap a draft to delete)");
+  });
+});
+renderDrafts();
+
+// ---------- breath box ----------
+var gOn=false, gTimer=null, gPhase=0;
+var phases=[["breathe in",1.35],["hold",1.35],["breathe out",1.0],["empty",1.0]];
+function gStep(){
+  var p=phases[gPhase];
+  $("gPhase").textContent=p[0];
+  var c=$("gCircle");
+  c.style.transitionDuration="3.8s";
+  c.style.transform="scale("+p[1]+")";
+  c.style.borderColor = gPhase===0 ? "#8f6fd8" : (gPhase===2 ? "#5d4a8f" : "#8f8ba0");
+  gPhase=(gPhase+1)%4;
+  gTimer=setTimeout(gStep,4000);
+}
+$("gBtn").addEventListener("click", function(){
+  gOn=!gOn;
+  this.textContent = gOn ? "end" : "begin";
+  if(gOn){ gPhase=0; gStep(); }
+  else { clearTimeout(gTimer); $("gPhase").innerHTML="&nbsp;";
+    var c=$("gCircle"); c.style.transform="scale(1)"; c.style.borderColor="var(--amethyst-dim)"; }
+});
+// ---------- belief ledger ----------
+var beliefs = load("ap_beliefs",[]);
+var STATUSES = ["Testing","Running","Retired"];
+var PILLCLS = {Testing:"test",Running:"run",Retired:"ret"};
+function fmtDate(t){ var d=new Date(t); return d.toLocaleDateString(); }
+function renderBeliefs(){
+  var el=$("belList"); el.innerHTML="";
+  if(!beliefs.length){ el.innerHTML='<p class="small" style="text-align:center">no beliefs on trial yet</p>'; return; }
+  beliefs.forEach(function(b,i){
+    var card=document.createElement("div"); card.className="card";
+    card.innerHTML =
+      '<div class="entry" style="border:0;padding:0">'+
+      '<div class="meta">'+fmtDate(b.t)+' &middot; <span class="pill '+PILLCLS[b.status]+'">'+b.status+'</span></div>'+
+      '<p style="font-family:var(--disp);letter-spacing:.06em;margin:.35rem 0 0">'+esc(b.name)+'</p>'+
+      '<p class="statement">&ldquo;'+esc(b.statement)+'&rdquo;</p>'+
+      (b.notes?('<p class="small">'+esc(b.notes)+'</p>'):"")+
+      '</div>';
+    var row=document.createElement("div"); row.className="row";
+    var cyc=document.createElement("button"); cyc.className="b";
+    cyc.textContent="status: "+b.status.toLowerCase();
+    cyc.addEventListener("click", function(){
+      b.status = STATUSES[(STATUSES.indexOf(b.status)+1)%STATUSES.length];
+      store("ap_beliefs",beliefs); renderBeliefs();
+    });
+    var del=document.createElement("button"); del.className="b warn"; del.textContent="delete";
+    del.addEventListener("click", function(){
+      if(confirm("Delete this belief?")){ beliefs.splice(i,1); store("ap_beliefs",beliefs); renderBeliefs(); }
+    });
+    row.appendChild(cyc); row.appendChild(del); card.appendChild(row);
+    el.appendChild(card);
+  });
+}
+$("belAdd").addEventListener("click", function(){
+  var n=$("belName").value.trim(), s=$("belState").value.trim();
+  if(!n||!s){ toast("name and statement required"); return; }
+  beliefs.unshift({name:n,statement:s,notes:$("belNotes").value.trim(),status:"Testing",t:Date.now()});
+  store("ap_beliefs",beliefs);
+  $("belName").value=""; $("belState").value=""; $("belNotes").value="";
+  renderBeliefs(); toast("on trial");
+});
+renderBeliefs();
+
+// ---------- practice log ----------
+var logs = load("ap_logs",[]);
+function renderLogs(){
+  var el=$("logList"); el.innerHTML="";
+  if(!logs.length){ el.innerHTML='<p class="small" style="text-align:center">the record is empty</p>'; return; }
+  var card=document.createElement("div"); card.className="card";
+  logs.forEach(function(L,i){
+    var d=document.createElement("div"); d.className="entry";
+    d.innerHTML='<div class="meta">'+fmtDate(L.t)+' &middot; '+esc(L.type)+'</div>'+
+      '<p style="margin:.3rem 0 0">'+esc(L.text)+'</p>';
+    d.addEventListener("dblclick", function(){
+      if(confirm("Delete this entry?")){ logs.splice(i,1); store("ap_logs",logs); renderLogs(); }
+    });
+    card.appendChild(d);
+  });
+  el.appendChild(card);
+}
+$("logAdd").addEventListener("click", function(){
+  var t=$("logText").value.trim();
+  if(!t){ toast("write the entry first"); return; }
+  logs.unshift({type:$("logType").value,text:t,t:Date.now()});
+  store("ap_logs",logs); $("logText").value="";
+  renderLogs(); toast("recorded");
+});
+renderLogs();
+// ---------- export / import ----------
+$("expBtn").addEventListener("click", function(){
+  var data={ app:"The Aperture", exported:new Date().toISOString(),
+    beliefs:beliefs, logs:logs, drafts:drafts };
+  var a=document.createElement("a");
+  a.download="aperture-grimoire-"+new Date().toISOString().slice(0,10)+".json";
+  a.href="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(data,null,2));
+  document.body.appendChild(a); a.click(); a.remove();
+  toast("grimoire exported");
+});
+$("impBtn").addEventListener("click", function(){ $("impFile").click(); });
+$("impFile").addEventListener("change", function(){
+  var f=this.files[0]; if(!f) return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var d=JSON.parse(rd.result);
+      if(d.beliefs) beliefs = d.beliefs.concat(beliefs);
+      if(d.logs) logs = d.logs.concat(logs);
+      if(d.drafts) drafts = d.drafts.concat(drafts).slice(0,12);
+      store("ap_beliefs",beliefs); store("ap_logs",logs); store("ap_drafts",drafts);
+      renderBeliefs(); renderLogs(); renderDrafts();
+      toast("grimoire merged in");
+    }catch(e){ toast("could not read that file"); }
+  };
+  rd.readAsText(f);
+  this.value="";
+});
+
+// ---------- boot ----------
+sizePad();
+setTimeout(sizePad, 250);
+</script>
+</body>
+</html>
