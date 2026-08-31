@@ -237,7 +237,30 @@ a{color:var(--amethyst)}
   </div>
 
   <div class="card">
-    <p class="small" style="margin:0">Nightly, at threshold &mdash; headphones on: trace each once with the eyes, once with a finger in the air. Reversal first (the jaws), Unmoved second (the hand), Mint third (the coin). Thirty seconds each. Stop when they appear whole without effort. Log firings in the record.</p>
+    <h3 style="margin-top:.2rem">The Remint</h3>
+    <svg viewBox="0 0 400 420" style="width:100%;max-width:340px;display:block;margin:0 auto;background:#080711;border:1px solid var(--hair);border-radius:10px">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="200" y1="70" x2="200" y2="330" stroke="#ece8df" stroke-width="5"/>
+        <circle cx="200" cy="160" r="38" stroke="#ece8df" stroke-width="5"/>
+        <polyline points="184,166 192,152 200,166 208,152 216,166" stroke="#ece8df" stroke-width="3.5"/>
+        <line x1="152" y1="230" x2="248" y2="230" stroke="#ece8df" stroke-width="5"/>
+        <line x1="200" y1="230" x2="150" y2="300" stroke="#ece8df" stroke-width="5"/>
+        <line x1="200" y1="230" x2="250" y2="300" stroke="#ece8df" stroke-width="5"/>
+        <polyline points="140,330 170,305 200,330 230,305 260,330" stroke="#ece8df" stroke-width="5"/>
+        <path d="M 234 144 C 300 110, 320 40, 240 30 C 170 22, 90 60, 96 130 C 100 178, 140 172, 166 156" stroke="#b9b6c6" stroke-width="4"/>
+        <line x1="166" y1="156" x2="156" y2="148" stroke="#b9b6c6" stroke-width="4"/>
+        <line x1="166" y1="156" x2="160" y2="168" stroke="#b9b6c6" stroke-width="4"/>
+        <path d="M 128 344 Q 200 386 272 344" stroke="#7d7896" stroke-width="3.5"/>
+        <path d="M 148 349 Q 200 372 252 349" stroke="#7d7896" stroke-width="3.5"/>
+      </g>
+    </svg>
+    <p class="statement" style="text-align:center;font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dusk);margin-top:.8rem">i hold the loop &middot; <span style="color:var(--amethyst)">my coin runs home</span></p>
+    <p class="small">The money-side jaws, the Mint&rsquo;s named reversal &mdash; the Reversal&rsquo;s skeleton with the silver line bent into a circuit. Fired at the moment of outflow: the bill paid, the swipe, the transfer, watching the number drop. Hold the loop, release the coin on terms &mdash; deliberate, sealed, dread withheld. The flinch was the old program&rsquo;s signature on the drain; the loop is its cancellation.</p>
+    <p class="small">Read it beside its sibling: same spine, same eye, same stance &mdash; but the eye bears the seal now, and your own coin exits the aperture, orbits the crown, and comes home through the gate it left, to be struck again. The spending, drawn in reverse. Naming law: every reversal carries its opposite&rsquo;s name &mdash; the Mint strikes, the Remint re-strikes what returns.</p>
+  </div>
+
+  <div class="card">
+    <p class="small" style="margin:0">Nightly, at threshold &mdash; headphones on: trace each once with the eyes, once with a finger in the air. Reversal first (the jaws), Unmoved second (the hand), Mint third (the coin), Remint fourth (the loop). Thirty seconds each. Stop when they appear whole without effort. Log firings in the record.</p>
   </div>
 </section>
 
@@ -253,7 +276,7 @@ a{color:var(--amethyst)}
     <p><strong>The fear is the collector.</strong> Scarcity-dread is the enforcement arm &mdash; the whip that keeps the current flowing toward the claim-holders. The flinch at the bill, the clench at the balance, the chase: that is the collector at the door, and the flinch is your signature on the invoice. Paid-out fear feeds the lack exactly as it fed the night visitors.</p>
     <p><strong>The cut: sever the claim, never the current.</strong> The flow was never the enemy; the direction and terms were. Cut the current and nothing moves &mdash; poverty with incense. The working severs the <em>lien</em>: the pre-attached claim that turns your value into someone else&rsquo;s asset the moment it exists.</p>
     <p><strong>The upstream seat.</strong> Value exists before denomination &mdash; work, attention, word kept. Raw metal, yours at creation. The system reaches you only after your value is already coined as its IOU; the answer is positional: stand upstream, strike the value under your own seal &mdash; named, priced, owned &mdash; so it enters the current as your coin being spent, never their claim being serviced. When the collector comes to enforce the old arrangement, it walks into the snare and its own force strikes the next coin.</p>
-    <p class="small">Paired working: The Mint, on the Court tab. Under any model &mdash; spirit, psyche, cashflow &mdash; the mechanism is the same: own what you make, name your price, stop paying fear into the lack, keep a channel open.</p>
+    <p class="small">Paired workings: The Mint and The Remint, on the Court tab &mdash; the strike in, the loop out. Under any model &mdash; spirit, psyche, cashflow &mdash; the mechanism is the same: own what you make, name your price, stop paying fear into the lack, keep a channel open.</p>
   </details>
 
   <hr class="rule">
@@ -550,7 +573,21 @@ var FORMS=[
 {id:"night",name:"Night",meaning:"the deep that cradles; what holds the whole",
  why:"set beneath a finished working to seat it in the dark",
  strokes:function(){return [_arc(.5,.28,.42,Math.PI*0.12,Math.PI*0.88,16),
-   _arc(.5,.30,.30,Math.PI*0.16,Math.PI*0.84,12)];}}
+   _arc(.5,.30,.30,Math.PI*0.16,Math.PI*0.84,12)];}},
+{id:"cut",name:"Cut",meaning:"the severance; a claim ended before it lands",
+ why:"slash a line that rides toward what is yours - the flow stays, the claim dies",
+ strokes:function(){return [_line([.55,.12],[.3,.88]), _line([.8,.12],[.55,.88])];}},
+{id:"stance",name:"Stance",meaning:"arms out at the work; open, nothing braced",
+ why:"cross a spine where the standing one takes the seat",
+ strokes:function(){return [_line([.12,.5],[.88,.5])];}},
+{id:"seal",name:"Seal",meaning:"the crown struck into the face; sovereign issue, owed to no one",
+ why:"stamp made value so it leaves your hand as yours being spent",
+ strokes:function(){return [_arc(.5,.5,.4,0,Math.PI*2,26),
+   [[.28,.58],[.39,.4],[.5,.58],[.61,.4],[.72,.58]]];}},
+{id:"loop",name:"Loop",meaning:"circulation; what is spent on terms runs home",
+ why:"throw it around an outflow so the leaving becomes the return path",
+ strokes:function(){return [_arc(.5,.5,.38,Math.PI*0.3,Math.PI*2.1,30),
+   _line([.86,.62],[.74,.58]), _line([.86,.62],[.82,.74])];}}
 ];
 var armedForm=null, stampSize=1, SIZES=[.16,.26,.38], SIZENAMES=["s","m","l"];
 var reading=[];
