@@ -135,6 +135,9 @@ a{color:var(--amethyst)}
       <button class="b" id="sizeBtn">size: m</button>
       <button class="b" id="disarmBtn">empty hand</button>
     </div>
+    <h3>Aspect &mdash; the operator&rsquo;s mark</h3>
+    <p class="small">Not a letter of the alphabet &mdash; the hand that writes it. An aspect is a foundation of the operator. Stamp it into a working to sign it with how you win: the wait, the trap, the taking-back. A working runs truest in its maker&rsquo;s grain &mdash; and if the mark looks wrong on it, the design is out of character.</p>
+    <div id="aspList" class="row" style="justify-content:center"></div>
   </div>
   <div class="card">
     <label>Glyph &mdash; draw with your finger</label>
@@ -613,7 +616,7 @@ function buildPalette(){
     b.innerHTML=formSVG(f); b.title=f.name+" - "+f.meaning;
     b.addEventListener("click", function(){
       if(armedForm===f){ disarm(); return; }
-      document.querySelectorAll("#palList button").forEach(function(x){x.style.color="var(--dusk)";x.style.borderColor="var(--hair)";});
+      resetTrays();
       if(window.__sel===f){
         armedForm=f; b.style.color="var(--amethyst)"; b.style.borderColor="var(--amethyst-dim)";
         $("formInfo").innerHTML='<span style="color:var(--amethyst)" class="mono">'+f.name.toUpperCase()+' ARMED</span> &mdash; tap the canvas to stamp it';
@@ -627,7 +630,7 @@ function buildPalette(){
 }
 function disarm(){
   armedForm=null; window.__sel=null;
-  document.querySelectorAll("#palList button").forEach(function(x){x.style.color="var(--dusk)";x.style.borderColor="var(--hair)";});
+  resetTrays();
   $("formInfo").innerHTML="";
 }
 $("disarmBtn").addEventListener("click", disarm);
@@ -644,6 +647,39 @@ function stampAt(x,y){
   renderReading(); redraw();
 }
 buildPalette();
+
+// ---------- aspects (the operator's marks) ----------
+function resetTrays(){
+  document.querySelectorAll("#palList button").forEach(function(x){x.style.color="var(--dusk)";x.style.borderColor="var(--hair)";});
+  document.querySelectorAll("#aspList button").forEach(function(x){x.style.color="var(--amethyst-dim)";x.style.borderColor="var(--hair)";});
+}
+var ASPECTS=[
+{id:"coil",name:"The Coil",meaning:"the operator's nature - lying-in-wait, the trap, authority taken back",
+ why:"sign a working that wins your way: bait, patience, then possession - a working runs truest in its maker's grain",
+ strokes:function(){return [_arc(.5,.6,.26,Math.PI*0.75,Math.PI*2.25,24),
+   _arc(.5,.6,.15,Math.PI*0.75,Math.PI*2.25,16), _line([.5,.6],[.5,.06])];}}
+];
+function buildAspects(){
+  var pl=$("aspList");
+  ASPECTS.forEach(function(f){
+    var b=document.createElement("button");
+    b.className="b"; b.style.cssText="padding:.4rem;color:var(--amethyst-dim)";
+    b.innerHTML=formSVG(f); b.title=f.name+" - "+f.meaning;
+    b.addEventListener("click", function(){
+      if(armedForm===f){ disarm(); return; }
+      resetTrays();
+      if(window.__sel===f){
+        armedForm=f; b.style.color="var(--bone)"; b.style.borderColor="var(--amethyst-dim)";
+        $("formInfo").innerHTML='<span style="color:var(--amethyst)" class="mono">'+f.name.toUpperCase()+' ARMED</span> &mdash; stamp it to sign the working';
+      } else {
+        window.__sel=f; b.style.color="var(--amethyst)";
+        $("formInfo").innerHTML='<strong style="font-family:var(--disp);letter-spacing:.08em">'+f.name+'</strong> &mdash; '+f.meaning+'.<br><span style="color:var(--amethyst)">why:</span> '+f.why+'. <span class="mono">tap again to arm</span>';
+      }
+    });
+    pl.appendChild(b);
+  });
+}
+buildAspects();
 
 // ---------- export png / drafts ----------
 function snapshot(cb){
